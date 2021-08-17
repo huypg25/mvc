@@ -2,14 +2,13 @@
 
 namespace MVC\Models;
 
-use Doctrine\ORM\Mapping as ORM;
 use MVC\Core\Model;
 
 class TaskModel extends Model
 {
-    private $id;
-    private $title;
-    private $description;
+    protected $id;
+    protected $title;
+    protected $description;
 
     /**
      * @param $id
@@ -25,22 +24,6 @@ class TaskModel extends Model
 //        $this->title = $title;
 //        $this->description = $description;
 //    }
-
-    /**
-     * @return null
-     */
-    public static function getBdd()
-    {
-        return self::$bdd;
-    }
-
-    /**
-     * @param null $bdd
-     */
-    public static function setBdd($bdd): void
-    {
-        self::$bdd = $bdd;
-    }
 
     /**
      * @return mixed

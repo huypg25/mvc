@@ -19,15 +19,39 @@ class Router
             $request->action = "create";
             $request->params = [];
         }
-        elseif (strpos($url,'delete'))
+        elseif (strpos($url,'tasks/delete'))
         {
             $request->controller = "Tasks";
             $request->action = "delete";
             $request->params = [basename($url)];
         }
-        elseif (strpos($url,'edit'))
+        elseif (strpos($url,'tasks/edit'))
         {
             $request->controller = "Tasks";
+            $request->action = "edit";
+            $request->params = [basename($url)];
+        }
+        elseif ($url == "/mvc/person/")
+        {
+            $request->controller = "Person";
+            $request->action = "index";
+            $request->params = [];
+        }
+        elseif ($url == "/mvc/person/create/")
+        {
+            $request->controller = "Person";
+            $request->action = "create";
+            $request->params = [];
+        }
+        elseif (strpos($url,'person/delete'))
+        {
+            $request->controller = "Person";
+            $request->action = "delete";
+            $request->params = [basename($url)];
+        }
+        elseif (strpos($url,'person/edit'))
+        {
+            $request->controller = "Person";
             $request->action = "edit";
             $request->params = [basename($url)];
         }

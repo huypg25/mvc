@@ -1,13 +1,10 @@
 <?php
 
 namespace MVC\Core;
-
-
 use MVC\Config\Database;
-
-class ResourceModel extends Model implements ResourceModelInterface
+use PDO;
+class ResourceModel implements ResourceModelInterface
 {
-
     private  $table;
     private $id;
     private $model;
@@ -22,31 +19,24 @@ class ResourceModel extends Model implements ResourceModelInterface
     public function save($model)
     {
 
-        $id = $model[$this->id];
-
-        $stringModel = null;
-        foreach ($model as $key => $value){
-            if($key=="id"){
-                $stringModel.="{$key} = {$value},";
-
-            }else{
-            $stringModel.="{$key} = '{$value}',";}
+        $arrayModel = $model->getProperties();
+        $arr = [];
+        foreach($arrayModel as $key=>$value)
+        {
+            array_push($arr, $key.' = :'.$key);
         }
-        $stringModel = substr($stringModel, 0, -1);
-
-//        INSERT INTO tasks SET title = 'sadasd', description = 'asdasd99999';
-
-
-        if ($model[$this->id] == null) {
+        $stringModel = implode(', ', $arr);
+        if($model->getId() === null)
+        {
             $sql = "INSERT INTO $this->table SET $stringModel";
-            var_dump($sql);
-        } else {
-            $sql = "UPDATE $this->table SET $stringModel WHERE $this->id = $id";
-            var_dump($sql);
+
+        }else {
+            $sql = "UPDATE $this->table SET $stringModel WHERE $this->id=:id";
+
         }
-//        var_dump($sql);
         $req = Database::getBdd()->prepare($sql);
-        return $req->execute();
+        return $req->execute($arrayModel);
+
     }
 
     public function remove($id)
@@ -61,13 +51,7 @@ class ResourceModel extends Model implements ResourceModelInterface
         $sql = "SELECT * FROM $this->table WHERE $this->id = $id";
         $req = Database::getBdd()->prepare($sql);
         $req->execute();
-//        echo '<pre>' . var_export( $req->fetchObject(get_class($this->model)), true) . '</pre>';
-//        return $req->fetchALl();
-
         return $req->fetchObject(get_class($this->model));
-
-        //        return ($req->fetchObject(get_class($this->model)));
-
     }
 
     public function getAll()
@@ -75,9 +59,8 @@ class ResourceModel extends Model implements ResourceModelInterface
         $sql = "SELECT * FROM $this->table";
         $req = Database::getBdd()->prepare($sql);
         $req->execute();
-//           var_dump($req);
-        return $req->fetchALl();
-//        return ($req->fetchAll(PDO::FETCH_CLASS, get_class($this->model)));
+        return $req->fetchAll(PDO::FETCH_CLASS, get_class($this->model));
+
 
     }
 }
